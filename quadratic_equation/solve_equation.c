@@ -4,20 +4,37 @@
 #include <string.h>
 
 // backend functions | for solving equation 
+int compare(float num1, float num2) {
+    float res = num1 - num2;
+    if (res > 0) { // num1 > num2
+        return 1;
+    }
+
+    else if (res < 0) { // num1 < num2
+        return -1;
+    }
+
+    else {
+        return 0;
+    }
+
+}
+
 float linear_solution(float b, float c) {
     return -c / b;
 }
 
 int quadratic_solution(float a, float b, float c, float solutions[], char no_roots[]) {
     float D = (b*b) - (4 * a * c);
+    printf("%f D %f D - 0.0", D, D - 0.0);
     
-    if (D > 0) {
+    if (compare(D, 0) == 1) {
         solutions[0] = (-b + sqrtf(D)) / (2 * a);
         solutions[1] = (-b - sqrtf(D)) / (2 * a);
         return 2;
     }
 
-    else if (D == 0) {
+    else if (compare(D, 0) == 0) {
         solutions[0] = -b / (2 * a);
         return 1;
     }

@@ -7,11 +7,12 @@ bool clean_stdin() {
     while (getchar() != '\n') {
         continue;       
     }
+
     return true;
 }
 
 bool my_is_inf(float par) {
-    if (par != FLT_MAX && par != -FLT_MAX && par < FLT_MAX && par > -FLT_MAX ) { // параметры не выходят за рамки - не являются бесконечностью    
+    if (par < FLT_MAX && par > -FLT_MAX ) { // параметры не выходят за рамки - не являются бесконечностью    
         return false;
     }
     //printf("%f is float max, %f is float min, %f is parameter", FLT_MAX, FLT_MIN, par);
