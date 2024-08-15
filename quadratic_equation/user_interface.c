@@ -53,16 +53,16 @@ void output_solutions(int q_solutions, float solutions[], char no_roots[], float
             }
             
             else if (strcmp(no_roots, "coef") == 0) {
-                printf("You probably didn't enter coefficents a and b (a = %.2f, b = %.2f). Resulted expression is not an equation.\n", a, b);
+                printf("You probably didn't enter coefficents a and b (a = %f, b = %f). Resulted expression is not an equation.\n", a, b);
             }
             break;
 
         case 1:
-            printf("Single Root is %.2f.\n", solutions[0]);
+            printf("Single Root is %f.\n", solutions[0]);
             break;
 
         case 2:
-            printf("The equation has two roots: %.2f and %.2f.\n", solutions[0], solutions[1]);
+            printf("The equation has two roots: %f and %f.\n", solutions[0], solutions[1]);
 
     }
 }

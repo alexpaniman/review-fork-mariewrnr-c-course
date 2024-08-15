@@ -1,7 +1,8 @@
 #ifndef SOLVE_EQUATION_H
 #define SOLVE_EQUATION_H
+#include <stdbool.h>
 
-int compare(float num1, float num2);
+bool compare(float num1, float num2);
 
 float linear_solution(float b, float c);
 
