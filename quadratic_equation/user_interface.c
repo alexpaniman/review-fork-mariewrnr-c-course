@@ -1,68 +1,75 @@
 #include "user_interface.h"
+#include "solve_equation.h"
+//#include "recording_errors.h"
 #include <stdio.h>
 #include <string.h>
 
 // UI functions | displaying equation
-void display_part_equation(float par, int exp) { // exp - степень, par - параметр | доработать
-    if (par > 0) {
-        if (exp == 1 || exp == 0) {
-            printf("+%.2f", par);
-        }
-        else {
-            printf("%.2f", par);
-        }
-    }
-    if (par < 0) {
-        printf("%.2f", par);
-    }
-
-    switch(exp) {
-        case 1:
-            if (par != 0) {
-            printf("x");
-            }
-            break;
-        case 2:
-            if (par != 0) {
-                printf("x^2");
-            }
-            break;
-        default:
-            break;
-    }
-
-
+void display_part_equation(float par, int exp, char sign) { // exp - степень, par - параметр, pos - позиция параметра (в начале не стоит знак "+")
+	if (!compare(par, 0)) {
+		switch(exp) {
+			case 0:
+				printf("%c%.4f", sign, par);
+				break;
+			case 1:
+				printf("%c%.4fx", sign, par);
+				break;
+			case 2:
+				printf("%c%.4fx^2", sign, par);
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 void display_equation(float a, float b, float c) {
 
-    display_part_equation(a, 2);
-    display_part_equation(b, 1);
-    display_part_equation(c, 0);
+	display_part_equation(a, 2, ' ');
 
-    printf(" = 0\n");
-      
+	if (b > 0 && !compare(a, 0)) {
+		display_part_equation(b, 1, '+');
+	}
+	else {
+		display_part_equation(b, 1, ' ');
+	}
+
+	if (c > 0 && !(compare (a, 0) && compare(b, 0))) {
+		display_part_equation(c, 0, '+');
+	}
+	else {
+		display_part_equation(c, 0, ' ');
+	}
+
+	printf(" = 0\n");
+	  
 }
 
-void output_solutions(int q_solutions, float solutions[], char no_roots[], float a, float b) {
-    switch(q_solutions) {
-        case 0:
-            if (strcmp(no_roots, "discr") == 0) {
-                printf("Discriminant is negative. That equation has no real roots.\n");
-                break;
-            }
-            
-            else if (strcmp(no_roots, "coef") == 0) {
-                printf("You probably didn't enter coefficents a and b (a = %f, b = %f). Resulted expression is not an equation.\n", a, b);
-            }
-            break;
+void output_solutions(int q_solutions, float solutions[], Errors error, float a, float b) {
+	switch(q_solutions) {
+		case 0:
+			switch (error) {
+				case NEGATIVE_DISCRIMINANT:
+					printf(error_text[NEGATIVE_DISCRIMINANT - 1]);
+					break;
+				break;
+				case NO_COEFFICIENTS:
+					printf(error_text[NO_COEFFICIENTS - 1], a, b);
+					break;
+			default:
+				break;
+			}
+		break;
 
-        case 1:
-            printf("Single Root is %f.\n", solutions[0]);
-            break;
+		case 1:
+			printf("Single Root is %f.\n", solutions[0]);
+			break;
 
-        case 2:
-            printf("The equation has two roots: %f and %f.\n", solutions[0], solutions[1]);
+		case 2:
+			printf("The equation has two roots: %f and %f.\n", solutions[0], solutions[1]);
+		
+		default:
+		break;
 
-    }
+	}
 }
