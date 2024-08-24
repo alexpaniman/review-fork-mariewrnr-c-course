@@ -3,10 +3,10 @@
 
 extern char* error_text[];
 
-typedef enum Errors {   
+typedef enum NoSolutionCases {
     NEGATIVE_DISCRIMINANT = 1,
     NO_COEFFICIENTS
-} Errors;
+} NoSolutionCases;
 
 
 #endif

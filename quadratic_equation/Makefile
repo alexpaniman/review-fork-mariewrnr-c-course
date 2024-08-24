@@ -1,4 +1,4 @@
-# Compiler
+# Compiler | TODO: использовать компилятор c++
 CC=clang
 
 # Important (making object) flags
@@ -16,7 +16,7 @@ EXECUTABLE=bin
 
 .PHONY: all .c.o clean go
 
-all: $(SOURCES) $(EXECUTABLE)
+all: $(EXECUTABLE)
 
 go: all
 	./$(EXECUTABLE)

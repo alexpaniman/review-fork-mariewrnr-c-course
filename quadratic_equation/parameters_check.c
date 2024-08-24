@@ -3,7 +3,7 @@
 #include <float.h>
 
 // backend functions | for parameter check
-bool clean_stdin() { 
+static bool clean_stdin() {
     while (getchar() != '\n') {
         continue;       
     }
@@ -11,30 +11,23 @@ bool clean_stdin() {
     return true;
 }
 
-bool my_is_inf(float par) {
-    if (par < FLT_MAX && par > -FLT_MAX ) { // параметры не выходят за рамки - не являются бесконечностью    
-        return false;
-    }
+static bool is_float_infinity(float par) { //TODO: проверить стандартную функцию проверки isinf()
     //printf("%f is float max, %f is float min, %f is parameter", FLT_MAX, FLT_MIN, par);
-    return true;
+    return par >= FLT_MAX || par <= -FLT_MAX;
 }
 
-bool check_pars_inf (float a, float b, float c) {
-    if (my_is_inf(a) || my_is_inf(b) || my_is_inf(c)) { // проверка на параметры не пройдена (как минимум один из них является бесконечностью, но возвращается true)
-        return true; 
-    }
-    return false;
+static bool are_coefficients_infinity (float a, float b, float c) {
+//  общая проверка коэффициентов на выход из допустимого диапазона
+     // проверка на параметры не пройдена (как минимум один из них является бесконечностью, но возвращается true)
+    return is_float_infinity(a) || is_float_infinity(b) || is_float_infinity(c); 
 }
 
-bool scan_parameters(float *a, float *b, float *c) {
-    if (scanf("%f %f %f", a, b, c) == 3) {
-        return true;
-    }
-    return false;
+static bool are_coefficients_float(float *a, float *b, float *c) { // TODO: эта функция нахрен не сдалась (либо прописать обработку ошибок \\возможно с помощью структур//)
+    return scanf("%f %f %f", a, b, c) == 3;
 }
 
-void general_check_parameters(float *a, float *b, float *c) {
-     while ((!scan_parameters(a, b, c) && clean_stdin()) || check_pars_inf(*a, *b, *c)) { 
+void show_coefficients_check(float *a, float *b, float *c) {
+     while ((!are_coefficients_float(a, b, c) && clean_stdin()) || are_coefficients_infinity(*a, *b, *c)) { 
         printf("Wrong format. Try again!\n");
     }   
 }

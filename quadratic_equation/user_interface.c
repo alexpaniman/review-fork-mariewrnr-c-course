@@ -9,7 +9,7 @@ void display_part_equation(float par, int exp, char sign) { // exp - степе�
 	if (!compare(par, 0)) {
 		switch(exp) {
 			case 0:
-				printf("%c%.4f", sign, par);
+				printf("%c%.4f", sign, par); // TODO: %+.4f | уменьшить кол-во printf
 				break;
 			case 1:
 				printf("%c%.4fx", sign, par);
@@ -45,10 +45,10 @@ void display_equation(float a, float b, float c) {
 	  
 }
 
-void output_solutions(int q_solutions, float solutions[], Errors error, float a, float b) {
-	switch(q_solutions) {
+void output_solutions(int q_solutions, float solutions[], NoSolutionCases solution_case, float a, float b) {
+	switch(q_solutions) { // TODO: убрать вложенности (switch in switch)//
 		case 0:
-			switch (error) {
+			switch (solution_case) {
 				case NEGATIVE_DISCRIMINANT:
 					printf(error_text[NEGATIVE_DISCRIMINANT - 1]);
 					break;
