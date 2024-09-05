@@ -8,7 +8,7 @@
 const float epsilon = 1e-6;
 
 // backend functions | for solving equation 
-bool compare(float num1, float num2) { // TODO: переименовать в  is_equal;
+bool is_equal(float num1, float num2) { // TODO: переименовать в  is_equal;
     float res = fabs(num1 - num2);
     return res <= epsilon;
 }
@@ -28,19 +28,19 @@ int quadratic_solution(float a, float b, float c, float solutions[], NoSolutionC
         solutions[0] = (-b + sqrtf_D) / (2 * a); 
         solutions[1] = (-b - sqrtf_D) / (2 * a);
 
-        if (compare(solutions[0], 0))  {  // to cut off approximate part and "-" sign (like -0.0000000000000001 ~= 0.0)
+        if (is_equal(solutions[0], 0))  {  // to cut off approximate part and "-" sign (like -0.0000000000000001 ~= 0.0)
             solutions[0] = 0;
         }
-        if (compare(solutions[1], 0))  {
+        if (is_equal(solutions[1], 0))  {
             solutions[1] = 0;
         }
 
         return 2;
     }
 
-    else if (compare(D, 0)) {
+    else if (is_equal(D, 0)) {
         solutions[0] = -b / (2 * a);
-        if (compare(solutions[0], 0))  { // TODO: вынести в отдельную функцию 
+        if (is_equal(solutions[0], 0))  { // TODO: вынести в отдельную функцию 
             solutions[0] = 0;
         }
         return 1;
@@ -53,8 +53,8 @@ int quadratic_solution(float a, float b, float c, float solutions[], NoSolutionC
 
 int solve_equation(float a, float b, float c, float solutions[], NoSolutionCases* solution_case) {
 
-    if (compare(a, 0)) { 
-        if (compare(b, 0)) { // two "if" is enough to make a conclusion that equation has no roots
+    if (is_equal(a, 0)) { 
+        if (is_equal(b, 0)) { // two "if" is enough to make a conclusion that equation has no roots
             *solution_case = NO_COEFFICIENTS;
             return 0;
         }

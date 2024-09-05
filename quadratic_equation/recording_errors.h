@@ -4,7 +4,7 @@
 extern char* error_text[];
 
 typedef enum NoSolutionCases {
-    NEGATIVE_DISCRIMINANT = 1,
+    NEGATIVE_DISCRIMINANT,
     NO_COEFFICIENTS
 } NoSolutionCases;
 

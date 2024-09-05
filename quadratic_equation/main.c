@@ -6,7 +6,7 @@
 
 char* error_text[] = {
     "Discriminant is negative. That equation has no real roots.\n",
-    "You probably didn't enter coefficents a and b (a = %f, b = %f). Resulted expression is not an equation.\n"
+    "You probably didn't enter coefficents a and b. Resulted expression is not an equation.\n"
             
 };
 

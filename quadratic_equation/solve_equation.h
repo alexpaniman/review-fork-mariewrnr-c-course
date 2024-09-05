@@ -3,7 +3,7 @@
 #include "recording_errors.h"
 #include <stdbool.h>
 
-bool compare(float num1, float num2);
+bool is_equal(float num1, float num2);
 
 // float linear_solution(float b, float c);
 

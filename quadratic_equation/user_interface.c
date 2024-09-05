@@ -6,7 +6,7 @@
 
 // UI functions | displaying equation
 void display_part_equation(float par, int exp, char sign) { // exp - степень, par - параметр, pos - позиция параметра (в начале не стоит знак "+")
-	if (!compare(par, 0)) {
+	if (!is_equal(par, 0)) {
 		switch(exp) {
 			case 0:
 				printf("%c%.4f", sign, par); // TODO: %+.4f | уменьшить кол-во printf
@@ -27,14 +27,14 @@ void display_equation(float a, float b, float c) {
 
 	display_part_equation(a, 2, ' ');
 
-	if (b > 0 && !compare(a, 0)) {
+	if (b > 0 && !is_equal(a, 0)) {
 		display_part_equation(b, 1, '+');
 	}
 	else {
 		display_part_equation(b, 1, ' ');
 	}
 
-	if (c > 0 && !(compare (a, 0) && compare(b, 0))) {
+	if (c > 0 && !(is_equal (a, 0) && is_equal(b, 0))) {
 		display_part_equation(c, 0, '+');
 	}
 	else {
@@ -50,11 +50,11 @@ void output_solutions(int q_solutions, float solutions[], NoSolutionCases soluti
 		case 0:
 			switch (solution_case) {
 				case NEGATIVE_DISCRIMINANT:
-					printf(error_text[NEGATIVE_DISCRIMINANT - 1]);
+					printf("%s\n", error_text[NEGATIVE_DISCRIMINANT]);
 					break;
 				break;
 				case NO_COEFFICIENTS:
-					printf(error_text[NO_COEFFICIENTS - 1], a, b);
+					printf("%s\n", error_text[NO_COEFFICIENTS]);
 					break;
 			default:
 				break;
