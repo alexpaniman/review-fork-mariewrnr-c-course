@@ -1,18 +1,22 @@
 #include "solve_equation.h"
+#include "helpin_checks_n_consts.h"
 //#include "recording_errors.h"
+#include "equation_data.h"
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
 #include <stdbool.h>
 
-const float epsilon = 1e-6;
-
 // backend functions | for solving equation 
-bool is_equal(float num1, float num2) {
-    float res = fabs(num1 - num2);
-    return res <= epsilon;
-}
 
+void define_equation_type(equation *equation_data) {
+	if (is_equal(equation_data->a, 0)) {
+		equation_data->eq_type = LINEAR_EQUATION;
+		return;
+	}
+    equation_data->eq_type = QUADRATIC_EQUATION;
+    //printf("%d\n", equation_data->eq_type);
+}
 
 // float linear_solution(float b, float c) {
 //     return -c / b;
@@ -51,18 +55,20 @@ bool is_equal(float num1, float num2) {
 //     return 0;
 // }
 
-// int solve_equation(float a, float b, float c, float solutions[], NoSolutionCases* solution_case) {
+int solve_equation(equation *equation_data) {
 
-//     if (is_equal(a, 0)) { 
-//         if (is_equal(b, 0)) { // two "if" is enough to make a conclusion that equation has no roots
-//             *solution_case = NO_COEFFICIENTS;
-//             return 0;
-//         }
+    define_equation_type(equation_data); 
+    //printf("%d\n", equation_data->eq_type);
+    // if (is_equal(a, 0)) { 
+    //     if (is_equal(b, 0)) { // two "if" is enough to make a conclusion that equation has no roots
+    //         *solution_case = NO_COEFFICIENTS;
+    //         return 0;
+    //     }
 
-//         printf("That equation is linear!\n"); // TODO ME: вынести в описательную часть
-//         solutions[0] = linear_solution(b, c);
-//         return 1;
-//     }
+    //     printf("That equation is linear!\n"); // TODO ME: вынести в описательную часть
+    //     solutions[0] = linear_solution(b, c);
+    //     return 1;
+    // }
     
-//     return quadratic_solution(a, b, c, solutions, solution_case);
-// }
+    //return quadratic_solution(a, b, c, solutions, solution_case);
+}

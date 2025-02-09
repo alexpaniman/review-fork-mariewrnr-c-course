@@ -1,6 +1,7 @@
 #ifndef USER_INTERFACE_H
 #define USER_INTERFACE_H
 #include "equation_data.h"
+#include "solve_equation.h"
 #include <math.h>
 
 // extern char* error_text[];

@@ -8,7 +8,7 @@ CFLAGS=-c -D _DEBUG -ggdb3 -Wall -Wextra -Weffc++ -Wcast-align -Wcast-qual -Wcha
 LDFLAGS=-lm
 
 # Sources to make object files to pack bin
-SOURCES=main.c solve_equation.c user_interface.c
+SOURCES=main.c helpin_checks_n_consts.c solve_equation.c user_interface.c 
 
 # Just pick up SOURCES and change extension to .o (objects)
 OBJECTS=$(SOURCES:.c=.o)

@@ -1,4 +1,5 @@
 #include "user_interface.h"
+#include "helpin_checks_n_consts.h"
 #include "solve_equation.h"
 //#include "recording_errors.h"
 #include <stdio.h>
@@ -7,31 +8,20 @@
 
 // UI functions | displaying equation
 
-// void output_user_interface(UserOutput phrase) {
-// 	switch(phrase) {
-// 		case ENTER_COEFFICIENTS:
-// 			printf("Please, enter coefficients a, b and c. Format: a b c;\n");
-// 			break;
-// 		case ERROR_INPUT:
-// 			printf("Wrong format. Try again!\n");
-// 			break;
-// 		default:
-// 			break;
-// 	}
-// }
-
-static bool clean_stdin() {
-    while (getchar() != '\n') {
-        continue;       
-    }
-
-    return true;
+void display_equation_type(equation *equation_data) {
+	if (equation_data->eq_type == LINEAR_EQUATION) {
+		printf("This equation is linear!\n");
+		return;
+	}
+	printf("This equation is quadratic!");
 }
 
-static bool are_coefficients_infinity (float a, float b, float c) {
-//  общая проверка на бесконечность
-    return isinf(a) || isinf(b) || isinf(c); 
+void output_solution(equation *equation_data) {
+	display_equation(equation_data);
+	display_equation_type(equation_data);
+	// выписать все остальное сюда
 }
+
 
 void show_coefficients_check(equation *equation_data) {
 	// output_user_interface(ENTER_COEFFICIENTS);
@@ -42,11 +32,6 @@ void show_coefficients_check(equation *equation_data) {
 			// output_user_interface(ERROR_INPUT);
 			
     }   
-}
-
-void output_solution(equation *equation_data) {
-	display_equation(equation_data);
-	// выписать все остальное сюда
 }
 
 void store_equation_part(float coef, char* exp, char* equation_buf) { // exp - степень; TODO: пополнение строки должно производиться через буфер
@@ -66,7 +51,7 @@ void display_equation(equation *equation_data) {
 	store_equation_part(equation_data->c, " ", equation_data->equation_view);
 	
 
-	printf("%s", equation_data->equation_view);
+	printf("%s\n", equation_data->equation_view);
 	  
 }
 

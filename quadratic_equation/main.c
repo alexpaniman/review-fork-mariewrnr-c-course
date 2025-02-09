@@ -9,6 +9,8 @@ int main () {
 
     show_coefficients_check(&equation_data);  
 
+    solve_equation(&equation_data); // сначала ТОЛЬКО сопутствующие решению уравнения процедуры (определение типа ии последующее решение и запись в структуру)
+
     output_solution(&equation_data);
 
     return 0;
