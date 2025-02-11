@@ -4,6 +4,6 @@
 #include "equation_data.h"
 #include <stdbool.h>
 
-int solve_equation(equation *equation_data);
+bool solve_equation(equation *equation_data);
 
 #endif

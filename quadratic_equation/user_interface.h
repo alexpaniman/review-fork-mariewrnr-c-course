@@ -25,6 +25,7 @@ void output_solution(equation *equation_data);
 
 void display_equation(equation *equation_data);
 
+void output_error();
 // void output_solutions(int q_solutions, float solutions[], NoSolutionCases solution_case, float a, float b);
 
 #endif

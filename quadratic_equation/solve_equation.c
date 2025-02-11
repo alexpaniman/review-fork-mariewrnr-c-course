@@ -10,17 +10,18 @@
 // backend functions | for solving equation 
 
 void define_equation_type(equation *equation_data) {
-	if (is_equal(equation_data->a, 0)) {
+	if (is_equal(equation_data->a, 0) && !is_equal(equation_data->b, 0)) {
 		equation_data->eq_type = LINEAR_EQUATION;
-		return;
 	}
-    equation_data->eq_type = QUADRATIC_EQUATION;
+    else if (!is_equal(equation_data->a, 0)) {
+        equation_data->eq_type = QUADRATIC_EQUATION;
+    }
     //printf("%d\n", equation_data->eq_type);
 }
 
-// float linear_solution(float b, float c) {
-//     return -c / b;
-// }
+float linear_solution(equation *equation_data) {
+     return -equation_data->c / equation_data->b;
+}
 
 // int quadratic_solution(float a, float b, float c, float solutions[], NoSolutionCases* solution_case) { 
 //     // TODO: структура Errors (код ошибки, текст), структура первичных данных (коэф-ты), структура для решения | подумать над возвращаемым типом
@@ -55,9 +56,19 @@ void define_equation_type(equation *equation_data) {
 //     return 0;
 // }
 
-int solve_equation(equation *equation_data) {
+bool solve_equation(equation *equation_data) { // функция может возвращать код (0 - успех, 1 - неудача по каким-то причинам); можно добавить обработчик ошибок??
 
-    define_equation_type(equation_data); 
+    define_equation_type(equation_data);
+
+    switch(equation_data->eq_type) {
+        case LINEAR_EQUATION:
+            equation_data->solutions[0] = linear_solution(equation_data);
+            return true;
+        case QUADRATIC_EQUATION:
+            return true;
+        default:
+            return false;
+    } 
     //printf("%d\n", equation_data->eq_type);
     // if (is_equal(a, 0)) { 
     //     if (is_equal(b, 0)) { // two "if" is enough to make a conclusion that equation has no roots
