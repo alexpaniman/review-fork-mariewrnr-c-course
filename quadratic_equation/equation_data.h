@@ -1,25 +1,33 @@
 #ifndef EQUATION_DATA_H
 #define EQUATION_DATA_H
 
-//typedef enum UserOutput { // опять же, не уверена, что оно вообще должно быть тут; UPD: нахуя оно здесь?
-//    ENTER_COEFFICIENTS,
-//    ERROR_INPUT
-//} UserOutput;
+
+typedef enum roots {
+    ONE_LINEAR_ROOT,
+    ONE_QUADRATIC_ROOT,
+    TWO_ROOTS,
+    INFINITE_ROOTS,
+    NO_REAL_ROOTS,
+    NO_ANY_ROOTS
+} roots;
 
 typedef enum equation_type {
     LINEAR_EQUATION,
-    QUADRATIC_EQUATION
+    QUADRATIC_EQUATION,
+    NO_EQUATION_TYPE
 } equation_type;
 
 
 typedef struct { // Все нужные данные об уравнении для вычислительной / описательной части
-// по факту эта структура может использоваться вообще во всех файлах, поэтому вполне возможно ее стоит использовать отдельно от всего остального
-    float a,b,c; // коэффициент
-    float D; // discriminant
-    equation_type eq_type;
-    char equation_view[100]; //
-    char no_solution_text[1000];
+    float a,b,c; 
+    float D;
     float solutions[2];
+
+    equation_type eq_type;
+    roots existing_roots;
+
+    char equation_view[100];
+
 } equation;
 
 

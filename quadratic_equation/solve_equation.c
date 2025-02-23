@@ -1,6 +1,5 @@
 #include "solve_equation.h"
 #include "helpin_checks_n_consts.h"
-//#include "recording_errors.h"
 #include "equation_data.h"
 #include <stdio.h>
 #include <math.h>
@@ -9,77 +8,79 @@
 
 // backend functions | for solving equation 
 
-void define_equation_type(equation *equation_data) {
-	if (is_equal(equation_data->a, 0) && !is_equal(equation_data->b, 0)) {
-		equation_data->eq_type = LINEAR_EQUATION;
-	}
-    else if (!is_equal(equation_data->a, 0)) {
-        equation_data->eq_type = QUADRATIC_EQUATION;
+static equation_type define_equation_type(float a, float b) { // Define type of equation and save it at equation_data
+    bool is_a_zero = is_equal(a, 0);
+    bool is_b_zero = is_equal(b, 0);
+
+	if (is_a_zero) {
+        return is_b_zero ? NO_EQUATION_TYPE : LINEAR_EQUATION;
     }
-    //printf("%d\n", equation_data->eq_type);
+    return QUADRATIC_EQUATION;
 }
 
-float linear_solution(equation *equation_data) {
-     return -equation_data->c / equation_data->b;
+float calculate_discriminant(float a, float b, float c) { 
+    return b * b - 4 * a * c;
 }
 
-// int quadratic_solution(float a, float b, float c, float solutions[], NoSolutionCases* solution_case) { 
-//     // TODO: структура Errors (код ошибки, текст), структура первичных данных (коэф-ты), структура для решения | подумать над возвращаемым типом
-//     float D = (b*b) - (4 * a * c);
-//     //printf("%f D %f D - 0.0\n", D, D - 0.0);
-    
-//     if (D > 0) {
-//         float sqrtf_D = sqrtf(D);
-//         solutions[0] = (-b + sqrtf_D) / (2 * a); 
-//         solutions[1] = (-b - sqrtf_D) / (2 * a);
+float solve_linear_equation(float b, float c) {
+    return -c / b;
+}
 
-//         if (is_equal(solutions[0], 0))  {  // to cut off approximate part and "-" sign (like -0.0000000000000001 ~= 0.0)
-//             solutions[0] = 0;
-//         }
-//         if (is_equal(solutions[1], 0))  {
-//             solutions[1] = 0;
-//         }
+void solve_quadratic_equation(equation *equation_data) {
+    float a = equation_data->a;
+    float b = equation_data->b;
+    float c = equation_data->c;
 
-//         return 2;
-//     }
+    equation_data->D = calculate_discriminant(a, b, c);
+   
+    if (equation_data->D > 0) { // Case, when D > 0
+        float sqrtf_D = sqrtf(equation_data->D);
+        equation_data->solutions[0] = (-b + sqrtf_D) / (2 * a); 
+        equation_data->solutions[1] = (-b - sqrtf_D) / (2 * a);
+        equation_data->existing_roots = TWO_ROOTS;
+    }
 
-//     else if (is_equal(D, 0)) {
-//         solutions[0] = -b / (2 * a);
-//         if (is_equal(solutions[0], 0))  { // TODO: вынести в отдельную функцию 
-//             solutions[0] = 0;
-//         }
-//         return 1;
-//     }
+    else if (is_equal(equation_data->D, 0)) { // D = 0
+        equation_data->solutions[0] = -b / (2 * a);
+        equation_data->existing_roots = ONE_QUADRATIC_ROOT;
+    }
 
-//     *solution_case = NEGATIVE_DISCRIMINANT;
-//     //printf("D = %.2f;\n", D); // перенести в описательную часть
-//     return 0;
-// }
+    else { // D < 0
+        equation_data->existing_roots = NO_REAL_ROOTS;
+    }
 
-bool solve_equation(equation *equation_data) { // функция может возвращать код (0 - успех, 1 - неудача по каким-то причинам); можно добавить обработчик ошибок??
+}
 
-    define_equation_type(equation_data);
+void solve_equation(equation *equation_data) {
 
-    switch(equation_data->eq_type) {
+    equation_data->eq_type = define_equation_type(equation_data->a, equation_data->b); // Saving equation type
+
+    switch(equation_data->eq_type) { // Choosing how to solve the equation
         case LINEAR_EQUATION:
-            equation_data->solutions[0] = linear_solution(equation_data);
-            return true;
-        case QUADRATIC_EQUATION:
-            return true;
-        default:
-            return false;
-    } 
-    //printf("%d\n", equation_data->eq_type);
-    // if (is_equal(a, 0)) { 
-    //     if (is_equal(b, 0)) { // two "if" is enough to make a conclusion that equation has no roots
-    //         *solution_case = NO_COEFFICIENTS;
-    //         return 0;
-    //     }
+            equation_data->solutions[0] = solve_linear_equation(equation_data->b, equation_data->c);
+            approximate_to_zero(&equation_data->solutions[0]); // to cut off approximate part and "-" sign (like -0.0000000000000001 ~= 0.0)
+            equation_data->existing_roots = ONE_LINEAR_ROOT;
+            break;
 
-    //     printf("That equation is linear!\n"); // TODO ME: вынести в описательную часть
-    //     solutions[0] = linear_solution(b, c);
-    //     return 1;
-    // }
-    
-    //return quadratic_solution(a, b, c, solutions, solution_case);
+        case QUADRATIC_EQUATION:
+            solve_quadratic_equation(equation_data);
+            if (equation_data->D >= 0) { // Only when the equation has at least one root!
+                approximate_to_zero(&equation_data->solutions[0]); // to cut off approximate part and "-" sign (like -0.0000000000000001 ~= 0.0)
+                approximate_to_zero(&equation_data->solutions[1]);
+            }
+            break;
+
+        case NO_EQUATION_TYPE:
+            bool is_c_zero = is_equal(equation_data->c, 0);
+
+            if (is_c_zero) {
+                equation_data->existing_roots = INFINITE_ROOTS;
+            }
+            else equation_data->existing_roots = NO_ANY_ROOTS;
+
+            break;
+
+        default:
+            break;
+    } 
 }
