@@ -14,7 +14,7 @@ bool clean_stdin() {
     return true;
 }
 
-bool are_coefficients_infinity (float a, float b, float c) { // TODO: убедиться в нужности static и что это вообще (как и extern)
+bool are_coefficients_infinity (float a, float b, float c) {
 //  общая проверка на бесконечность
     return isinf(a) || isinf(b) || isinf(c); 
 }
