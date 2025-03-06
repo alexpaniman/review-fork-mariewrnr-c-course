@@ -1,3 +1,5 @@
+# TODO: create .gitignore
+
 # Compiler | TODO: использовать компилятор c++
 CC=clang
 
