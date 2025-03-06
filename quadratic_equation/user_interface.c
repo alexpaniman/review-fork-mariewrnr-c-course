@@ -62,12 +62,12 @@ void display_roots(equation *equation_data) {
 			break;
 		
 		default:
-		  	printf("Unknown root type.\n");
+		  	printf("Unknown root type.\n"); // TODO: assert?
 			break;
 	}
 }
 
-void output_solution(equation *equation_data) {
+void output_solution(equation *equation_data) { // TODO: rename to print_...
 	display_equation(equation_data);
 	display_equation_type(equation_data);
 	display_roots(equation_data);
@@ -75,13 +75,29 @@ void output_solution(equation *equation_data) {
 }
 
 
+// TODO: rename read_coefficients
 void show_coefficients_check(equation *equation_data) {
 	printf("Please, enter coefficients a, b and c. Format: a b c;\n");
     while ((!(scanf("%f %f %f", &equation_data->a, &equation_data->b, &equation_data->c) == 3) && clean_stdin())
 	|| are_coefficients_infinity(equation_data->a, equation_data->b, equation_data->c)) { 
+//  ^ TODO: weird indentation
 		printf("Wrong format. Try again!\n");
 
     }   
+
+    // TODO: you split your complex condition in variables:
+    // while (true) {
+    //     if (scanf("%f %f %f", &equation_data->a, &equation_data->b, &equation_data->c) != 3) {
+    //         printf("Wrong format. Try again!\n");
+    //         continue;
+    //     }
+
+    //     if (!are_coefficients_infinity(equation_data->a, equation_data->b, equation_data->c))
+    //         break;
+
+    //     printf("Coefficients can't be infinite! Try again!\n");
+    //     clean_stdin();
+    // }
 }
 
 void store_equation_part(float coef, char* exp, char* equation_buf) { // exp - степень;
@@ -95,6 +111,9 @@ void store_equation_part(float coef, char* exp, char* equation_buf) { // exp - �
 
 void display_equation(equation *equation_data) {
 	equation_data->equation_view[0] = '\0';
+
+    // TODO: you can create buffer =here=
+
 	store_equation_part(equation_data->a, "x^2", equation_data->equation_view);
 	store_equation_part(equation_data->b, "x", equation_data->equation_view);
 	store_equation_part(equation_data->c, "", equation_data->equation_view);

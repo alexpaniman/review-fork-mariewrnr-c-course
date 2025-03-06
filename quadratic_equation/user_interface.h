@@ -1,9 +1,12 @@
 #ifndef USER_INTERFACE_H
 #define USER_INTERFACE_H
 #include "equation_data.h"
+
+// TODO: remove unused headers
 #include "solve_equation.h"
 #include <math.h>
 
+// TODO: why comment out code?
 // extern char* error_text[];
 
 // typedef enum NoSolutionCases {

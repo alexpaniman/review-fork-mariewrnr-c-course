@@ -40,6 +40,7 @@ void solve_quadratic_equation(equation *equation_data) {
         equation_data->existing_roots = TWO_ROOTS;
     }
 
+    // TODO: is equal(D, 0) should be first in this if..else chain
     else if (is_equal(equation_data->D, 0)) { // D = 0
         equation_data->solutions[0] = -b / (2 * a);
         equation_data->existing_roots = ONE_QUADRATIC_ROOT;
@@ -63,7 +64,7 @@ void solve_equation(equation *equation_data) {
             break;
 
         case QUADRATIC_EQUATION:
-            solve_quadratic_equation(equation_data);
+            solve_quadratic_equation(equation_data); // TODO: probably your equation solver function should be the one that decides how many roots your equations has
             if (equation_data->D >= 0) { // Only when the equation has at least one root!
                 approximate_to_zero(&equation_data->solutions[0]); // to cut off approximate part and "-" sign (like -0.0000000000000001 ~= 0.0)
                 approximate_to_zero(&equation_data->solutions[1]);
@@ -77,10 +78,34 @@ void solve_equation(equation *equation_data) {
                 equation_data->existing_roots = INFINITE_ROOTS;
             }
             else equation_data->existing_roots = NO_ANY_ROOTS;
+// TODO:         ^ weird alignment
 
             break;
 
         default:
+            // TODO: if you get there it's a programmer's error, assert is a tool to deal with such:
+            // assert(false && "Unhandled equation type");
             break;
     } 
+
+    // TODO: You can probably do something like this:
+    //
+    // switch(equation_data->eq_type) { // Choosing how to solve the equation
+    //     case LINEAR_EQUATION:
+    //         <solution> = solve_linear_equation(equation_data->b, equation_data->c);
+    //         break;
+    //
+    //     case QUADRATIC_EQUATION:
+    //         <solution> = solve_quadratic_equation(equation_data);
+    //         break;
+    //
+    //     case NO_EQUATION_TYPE:
+    //         // ...
+    //         break;
+    //     default:
+    //         break;
+    // } 
+    //
+    // approximate_to_zero(<solution>[0]);
+    // approximate_to_zero(<solution>[1]);
 }
