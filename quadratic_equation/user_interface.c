@@ -1,13 +1,14 @@
 #include "user_interface.h"
-#include "helpin_checks_n_consts.h"
+#include "reading_lines.h"
+#include "floating_arithmetic.h"
 #include "solve_equation.h"
 #include <stdio.h>
 #include <string.h>
 
 // UI functions | displaying equation
 
-void display_equation_type(equation *equation_data) {
-	switch(equation_data->eq_type) {
+void display_equation_type(equation *data) {
+	switch(data->type) {
 		case LINEAR_EQUATION:
 			printf("This equation is linear!\n");
 			break;
@@ -23,29 +24,29 @@ void display_equation_type(equation *equation_data) {
 	}
 }
 
-void display_D(equation *equation_data) {
-	printf("D = %.3f^2 - 4 * (%+.3f) * (%+.3f)\n", equation_data->b, equation_data->a, equation_data->c);
-	printf("D = %.3f\n", equation_data->D);
+void display_D(equation *data, equation_solution *solution) {
+	printf("D = %.3f^2 - 4 * (%+.3f) * (%+.3f)\n", data->b, data->a, data->c);
+	printf("D = %.3f\n", solution->D);
 	
 }
 
-void display_roots(equation *equation_data) {
-	switch(equation_data->existing_roots) {
+void display_roots(equation *data, equation_solution *solution) {
+	switch(solution->type) {
 		case TWO_ROOTS:
-			display_D(equation_data);
+			display_D(data, solution);
 			printf("The equation has two roots:\n");
-			printf("x1 = %.3f, x2 = %.3f\n", equation_data->solutions[0], equation_data->solutions[1]);
+			printf("x1 = %.3f, x2 = %.3f\n", solution->roots[0], solution->roots[1]);
 			break;
 
 		case ONE_QUADRATIC_ROOT:
-			display_D(equation_data);
+			display_D(data, solution);
 			printf("The equation has one root\n");
-			printf("x = %.3f\n", equation_data->solutions[0]);
+			printf("x = %.3f\n", solution->roots[0]);
 			break;
 
 		case ONE_LINEAR_ROOT:
 			printf("The equation has one root:\n");
-            printf("x = %.3f\n", equation_data->solutions[0]);
+            printf("x = %.3f\n", solution->roots[0]);
 			break;
 
 		case INFINITE_ROOTS:
@@ -53,7 +54,7 @@ void display_roots(equation *equation_data) {
 			break;
 
 		case NO_REAL_ROOTS:
-			display_D(equation_data);
+			display_D(data, solution);
 			printf("Discriminant is negative. The equation has no real roots\n");
 			break;
 
@@ -67,58 +68,50 @@ void display_roots(equation *equation_data) {
 	}
 }
 
-void output_solution(equation *equation_data) { // TODO: rename to print_...
-	display_equation(equation_data);
-	display_equation_type(equation_data);
-	display_roots(equation_data);
-	printf("Thank you for your attention!\n");
-}
-
-
-// TODO: rename read_coefficients
-void show_coefficients_check(equation *equation_data) {
-	printf("Please, enter coefficients a, b and c. Format: a b c;\n");
-    while ((!(scanf("%f %f %f", &equation_data->a, &equation_data->b, &equation_data->c) == 3) && clean_stdin())
-	|| are_coefficients_infinity(equation_data->a, equation_data->b, equation_data->c)) { 
-//  ^ TODO: weird indentation
-		printf("Wrong format. Try again!\n");
-
-    }   
-
-    // TODO: you split your complex condition in variables:
-    // while (true) {
-    //     if (scanf("%f %f %f", &equation_data->a, &equation_data->b, &equation_data->c) != 3) {
-    //         printf("Wrong format. Try again!\n");
-    //         continue;
-    //     }
-
-    //     if (!are_coefficients_infinity(equation_data->a, equation_data->b, equation_data->c))
-    //         break;
-
-    //     printf("Coefficients can't be infinite! Try again!\n");
-    //     clean_stdin();
-    // }
-}
-
 void store_equation_part(float coef, char* exp, char* equation_buf) { // exp - степень;
 	if (!is_equal(coef, 0)) {
 
 		sprintf(equation_buf, "%s%+f%s", equation_buf, coef, exp); // записывает число в строковый буфер (по пути преобразовывая его)
-		//printf("%s\n", equation_buf);
 	}
-	// return *part_buf;
 }
 
-void display_equation(equation *equation_data) {
-	equation_data->equation_view[0] = '\0';
+void display_equation(equation *data) {
+	float a = data->a, b = data->b, c = data->c;
+	char equation_view[100];
+	
+	equation_view[0] = '\0';
 
-    // TODO: you can create buffer =here=
-
-	store_equation_part(equation_data->a, "x^2", equation_data->equation_view);
-	store_equation_part(equation_data->b, "x", equation_data->equation_view);
-	store_equation_part(equation_data->c, "", equation_data->equation_view);
+	store_equation_part(a, "x^2", equation_view);
+	store_equation_part(b, "x", equation_view);
+	store_equation_part(c, "", equation_view);
 	
 
-	printf("%s=0\n", equation_data->equation_view);
+	printf("%s=0\n", equation_view);
 	  
 }
+
+void print_solution(equation *data, equation_solution *solution) {
+	display_equation(data);
+	display_equation_type(data);
+	display_roots(data, solution);
+	printf("Thank you for your attention!\n");
+}
+
+
+void read_coefficients(equation *data) {
+	printf("Please, enter coefficients a, b and c. Format: a b c;\n");
+	while (true) {
+		if (scanf("%f %f %f", &data->a, &data->b, &data->c) != 3) {
+			printf("Wrong format. Try again!\n");
+			continue;
+		}
+
+		if (!are_coefficients_infinity(data->a, data->b, data->c)) {
+			break;
+		}
+
+		printf("Coefficients can't be infinite. Try again!");
+		read_line_end();
+	} 
+}
+

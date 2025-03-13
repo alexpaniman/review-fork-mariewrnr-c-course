@@ -1,6 +1,6 @@
 #include "solve_equation.h"
-#include "helpin_checks_n_consts.h"
-#include "equation_data.h"
+#include "floating_arithmetic.h"
+#include "equation.h"
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
@@ -8,7 +8,7 @@
 
 // backend functions | for solving equation 
 
-static equation_type define_equation_type(float a, float b) { // Define type of equation and save it at equation_data
+equation_type define_equation_type(float a, float b) {
     bool is_a_zero = is_equal(a, 0);
     bool is_b_zero = is_equal(b, 0);
 
@@ -22,63 +22,68 @@ float calculate_discriminant(float a, float b, float c) {
     return b * b - 4 * a * c;
 }
 
-float solve_linear_equation(float b, float c) {
-    return -c / b;
+equation_solution solve_linear_equation(equation *data) {
+    equation_solution linear_solution;
+    float b = data->b;
+    float c = data->c;
+
+    linear_solution.roots[0] = -c / b;
+    linear_solution.type = ONE_LINEAR_ROOT;
+
+    return linear_solution;
 }
 
-void solve_quadratic_equation(equation *equation_data) {
-    float a = equation_data->a;
-    float b = equation_data->b;
-    float c = equation_data->c;
+equation_solution solve_quadratic_equation(equation *data) {
+    equation_solution quadratic_solution = {};
+    float a = data->a;
+    float b = data->b;
+    float c = data->c;
 
-    equation_data->D = calculate_discriminant(a, b, c);
+    quadratic_solution.D = calculate_discriminant(a, b, c);
+
+    if (is_equal(quadratic_solution.D, 0)) { // D = 0
+        quadratic_solution.roots[0] = -b / (2 * a);
+        quadratic_solution.type = ONE_QUADRATIC_ROOT;
+    }
+
    
-    if (equation_data->D > 0) { // Case, when D > 0
-        float sqrtf_D = sqrtf(equation_data->D);
-        equation_data->solutions[0] = (-b + sqrtf_D) / (2 * a); 
-        equation_data->solutions[1] = (-b - sqrtf_D) / (2 * a);
-        equation_data->existing_roots = TWO_ROOTS;
+    else if (quadratic_solution.D > 0) {
+        float sqrtf_D = sqrtf(quadratic_solution.D);
+        quadratic_solution.roots[0] = (-b + sqrtf_D) / (2 * a); 
+        quadratic_solution.roots[1] = (-b - sqrtf_D) / (2 * a);
+        quadratic_solution.type = TWO_ROOTS;
     }
 
-    // TODO: is equal(D, 0) should be first in this if..else chain
-    else if (is_equal(equation_data->D, 0)) { // D = 0
-        equation_data->solutions[0] = -b / (2 * a);
-        equation_data->existing_roots = ONE_QUADRATIC_ROOT;
+    else {
+        quadratic_solution.type = NO_REAL_ROOTS;
     }
 
-    else { // D < 0
-        equation_data->existing_roots = NO_REAL_ROOTS;
-    }
-
+    return quadratic_solution;
 }
 
-void solve_equation(equation *equation_data) {
+equation_solution solve_equation(equation *data) {
+    equation_solution solution = {};
+    data->type = define_equation_type(data->a, data->b); // Saving equation type
 
-    equation_data->eq_type = define_equation_type(equation_data->a, equation_data->b); // Saving equation type
-
-    switch(equation_data->eq_type) { // Choosing how to solve the equation
+    switch(data->type) { // Choosing how to solve the equation
         case LINEAR_EQUATION:
-            equation_data->solutions[0] = solve_linear_equation(equation_data->b, equation_data->c);
-            approximate_to_zero(&equation_data->solutions[0]); // to cut off approximate part and "-" sign (like -0.0000000000000001 ~= 0.0)
-            equation_data->existing_roots = ONE_LINEAR_ROOT;
+            solution = solve_linear_equation(data);
             break;
 
         case QUADRATIC_EQUATION:
-            solve_quadratic_equation(equation_data); // TODO: probably your equation solver function should be the one that decides how many roots your equations has
-            if (equation_data->D >= 0) { // Only when the equation has at least one root!
-                approximate_to_zero(&equation_data->solutions[0]); // to cut off approximate part and "-" sign (like -0.0000000000000001 ~= 0.0)
-                approximate_to_zero(&equation_data->solutions[1]);
-            }
+            solution = solve_quadratic_equation(data); 
             break;
 
         case NO_EQUATION_TYPE:
-            bool is_c_zero = is_equal(equation_data->c, 0);
+            bool is_c_zero = is_equal(data->c, 0);
 
             if (is_c_zero) {
-                equation_data->existing_roots = INFINITE_ROOTS;
+                solution.type = INFINITE_ROOTS;
             }
-            else equation_data->existing_roots = NO_ANY_ROOTS;
-// TODO:         ^ weird alignment
+
+            else {
+                solution.type = NO_ANY_ROOTS;
+            }
 
             break;
 
@@ -88,24 +93,8 @@ void solve_equation(equation *equation_data) {
             break;
     } 
 
-    // TODO: You can probably do something like this:
-    //
-    // switch(equation_data->eq_type) { // Choosing how to solve the equation
-    //     case LINEAR_EQUATION:
-    //         <solution> = solve_linear_equation(equation_data->b, equation_data->c);
-    //         break;
-    //
-    //     case QUADRATIC_EQUATION:
-    //         <solution> = solve_quadratic_equation(equation_data);
-    //         break;
-    //
-    //     case NO_EQUATION_TYPE:
-    //         // ...
-    //         break;
-    //     default:
-    //         break;
-    // } 
-    //
-    // approximate_to_zero(<solution>[0]);
-    // approximate_to_zero(<solution>[1]);
+    approximate_to_zero(&solution.roots[0]);
+    approximate_to_zero(&solution.roots[1]);
+    
+    return solution;
 }
