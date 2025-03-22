@@ -5,6 +5,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdbool.h>
+#include <assert.h>
 
 // backend functions | for solving equation 
 
@@ -88,8 +89,7 @@ equation_solution solve_equation(equation *data) {
             break;
 
         default:
-            // TODO: if you get there it's a programmer's error, assert is a tool to deal with such:
-            // assert(false && "Unhandled equation type");
+            assert(false && "Unhandled equation type");
             break;
     } 
 

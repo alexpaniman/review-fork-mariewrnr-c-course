@@ -1,4 +1,6 @@
-# TODO: create .gitignore
+# Directories to work with
+SRC_DIR = .
+TEST_DIR = tests
 
 # Compiler
 CC=clang
@@ -8,26 +10,42 @@ CFLAGS=-c -D _DEBUG -ggdb3 -Wall -Wextra -Weffc++ -Wcast-align -Wcast-qual -Wcha
 
 # Linker flags
 LDFLAGS=-lm
+MOCKFLAG = -lcmocka
 
 # Sources to make object files to pack bin
-SOURCES=main.c floating_arithmetic.c reading_lines.c solve_equation.c user_interface.c 
+MAIN = $(SRC_DIR)/main.c 
+SOURCES = $(SRC_DIR)/floating_arithmetic.c $(SRC_DIR)/reading_lines.c $(SRC_DIR)/solve_equation.c $(SRC_DIR)/user_interface.c 
+SOURCES_TEST = $(TEST_DIR)/main_test.c $(TEST_DIR)/test_arithmetic.c
 
 # Just pick up SOURCES and change extension to .o (objects)
-OBJECTS=$(SOURCES:.c=.o)
-EXECUTABLE=bin
+MAIN_O = $(MAIN:.c=.o)
+OBJECTS = $(SOURCES:.c=.o)
+OBJECTS_TEST = $(SOURCES_TEST:.c=.o)
 
-.PHONY: all .c.o clean go
+EXECUTABLE = $(SRC_DIR)/bin
+TESTS = $(TEST_DIR)/test
 
-all: $(EXECUTABLE)
+.PHONY: clean solver test
 
-go: all
+solver: $(EXECUTABLE)
 	./$(EXECUTABLE)
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+test: $(TESTS)
+	./$(TESTS)
 
-%.o: %.c
+$(EXECUTABLE): $(MAIN_O) $(OBJECTS)
+	$(CC) $(LDFLAGS) $(MAIN_O) $(OBJECTS) -o $@
+
+$(TESTS): $(OBJECTS_TEST) $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS_TEST) $(OBJECTS) -o $@ $(MOCKFLAG)
+
+
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) $< -o $@
+
+$(TEST_DIR)/%.o: $(TEST_DIR)/%.c
 	$(CC) $(CFLAGS) $< -o $@
 
 clean:
-	rm -rf *.o $(EXECUTABLE)
+	rm -rf $(MAIN_O) $(OBJECTS) $(EXECUTABLE)
+	rm -rf $(OBJECTS_TEST) $(TESTS)
